@@ -78,10 +78,20 @@ router.delete('/delete/:id', function(req, res) {
     })
 })
 
+router.get('/download/:id', function(req, res) {
+    mysql.db.query('SELECT * FROM `files` WHERE name ="' + req.params.id + '"', function (err, rows) {
+        if(err) return console.log(err)
+        if(rows.length === 0) return console.log(`Данного файла не существует`)
+
+        let file = `files/${rows[0].name}.${rows[0].expansion}`
+
+        return res.download(file)
+    })
+})
+
 router.get('/:id', function(req, res) {
     mysql.db.query('SELECT * FROM `files` WHERE name ="' + req.params.id + '"', function (err, rows) {
         if(err) return console.log(err)
-        console.log(req.params.id)
         if(rows.length === 0) return console.log(`Данного файла не существует`)
 
         return res.send({
