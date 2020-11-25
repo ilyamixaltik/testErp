@@ -83,9 +83,7 @@ router.get('/download/:id', function(req, res) {
         if(err) return console.log(err)
         if(rows.length === 0) return console.log(`Данного файла не существует`)
 
-        let file = `files/${rows[0].name}.${rows[0].expansion}`
-
-        return res.download(file)
+        return res.download(`files/${rows[0].name}.${rows[0].expansion}`)
     })
 })
 
