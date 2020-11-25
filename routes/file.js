@@ -56,9 +56,26 @@ router.get('/list', function(req, res) {
             }
         })
 
-        console.log(arrFiles)
-
         return res.send(arrFiles)
+    })
+})
+
+router.delete('/delete/:id', function(req, res) {
+    console.log(req.params)
+    mysql.db.query('SELECT * FROM `files` WHERE name ="' + req.params.id + '"', function (err, rows) {
+        if(err) return console.log(err)
+
+        if(rows.length === 0) return res.send(`Данного файла не существует`)
+
+        fs.unlink(`files/${rows[0].name}.${rows[0].expansion}`, (err) => {
+            if(err) return console.log(err)
+        })
+
+        mysql.db.query('DELETE FROM `files` WHERE name ="' + rows[0].name +'"', function (err) {
+            if(err) return console.log(err)
+        })
+
+        return res.send({ message: `Файл ${rows[0].name}.${rows[0].expansion} успешно удалён` })
     })
 })
 
