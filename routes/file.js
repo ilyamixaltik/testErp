@@ -19,7 +19,7 @@ router.post('/upload', function(req, res) {
                 if(err) console.log(err)
             });
 
-            return res.send({ message: `Файл успешно загружен`})
+            return res.send({ message: `Файл успешно загружен` })
         })
     });
 })
@@ -29,27 +29,33 @@ router.get('/list', function(req, res) {
         let page
         let listSize
 
-        if(!req.body.page){
+        if(!req.query.page){
             page = 1
         } else {
-            page = req.body.page
+            page = req.query.page
         }
 
-        if(!req.body.list_size){
+        if(!req.query.list_size){
             listSize = 10
         } else {
-            listSize = req.body.list_size
+            listSize = req.query.list_size
         }
 
         let startFile = (page * listSize) - listSize
         let endFile = page * listSize
 
         let arrFiles = rows.map((file, index) => {
-            let newArr = []
-                //console.log(file.name)
-                //if(startFile > index && endFile <= index)
-                newArr.push(`Имя: ${file.name}\nФормат: ${file.expansion}\nMIME-type: ${file.mimetype}\nРазмер: ${file.size}byte\nДата загрузки: ${file.date}`)
+            if(index >= startFile && index < endFile){
+                return {
+                    name: file.name,
+                    expansion: file.expansion,
+                    mimetype: file.mimetype,
+                    size: file.size,
+                    date: file.date
+                }
+            }
         })
+
         console.log(arrFiles)
 
         return res.send(arrFiles)
